@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model inventory {
+  id             Int              @id @default(autoincrement())
+  item           String           @db.VarChar(40)
+  owner          String           @db.VarChar(40)
+  location       String           @db.VarChar(40)
+  value          Int
+  status         String           @db.VarChar(45)
+  createdate     String           @db.VarChar(45)
+  comment        String           @db.VarChar(45)
+  condition      String           @db.VarChar(45)
+  item_transfers item_transfers[]
+}
+
+model item_transfers {
+  id                                    Int       @id @default(autoincrement())
+  item_id                               Int
+  from_user                             Int?
+  to_user                               Int?
+  transfer_date                         DateTime  @default(now()) @db.DateTime(0)
+  transfer_comment                      String?   @db.VarChar(255)
+  status                                String?   @db.VarChar(45)
+  inventory                             inventory @relation(fields: [item_id], references: [id], onDelete: Cascade, map: "item_transfers_ibfk_1")
+  users_item_transfers_from_userTousers users?    @relation("item_transfers_from_userTousers", fields: [from_user], references: [id], map: "item_transfers_ibfk_2")
+  users_item_transfers_to_userTousers   users?    @relation("item_transfers_to_userTousers", fields: [to_user], references: [id], map: "item_transfers_ibfk_3")
+
+  @@index([from_user], map: "from_user")
+  @@index([item_id], map: "item_id")
+  @@index([to_user], map: "to_user")
+}
+
+model usercomment {
+  id          Int       @id @default(autoincrement())
+  userID      Int
+  comment     String    @db.VarChar(200)
+  commentDate DateTime? @default(now()) @db.DateTime(0)
+  author      String    @db.VarChar(45)
+}
+
+model users {
+  id                                             Int              @id @default(autoincrement())
+  userstatus                                     String           @db.VarChar(20)
+  password                                       String           @db.VarChar(20)
+  type                                           String           @db.VarChar(20)
+  firstName                                      String           @db.VarChar(20)
+  lastName                                       String           @db.VarChar(20)
+  email                                          String           @unique(map: "email_UNIQUE") @db.VarChar(45)
+  position                                       String?          @db.VarChar(100)
+  date_of_birth                                  DateTime?        @db.Date
+  date_of_hire                                   DateTime?        @db.Date
+  employment_type                                String?          @db.VarChar(50)
+  supervisor_id                                  Int?
+  qualification                                  String?          @db.Text
+  work_location                                  String?          @db.VarChar(100)
+  salary                                         Decimal?         @db.Decimal(10, 2)
+  notes                                          String?          @db.Text
+  phone                                          String?          @db.VarChar(45)
+  gender                                         String?          @db.VarChar(10)
+  nationality                                    String?          @db.VarChar(50)
+  item_transfers_item_transfers_from_userTousers item_transfers[] @relation("item_transfers_from_userTousers")
+  item_transfers_item_transfers_to_userTousers   item_transfers[] @relation("item_transfers_to_userTousers")
+}
