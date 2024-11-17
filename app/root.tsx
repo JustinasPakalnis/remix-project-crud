@@ -1,28 +1,22 @@
 import {
+  Form,
   Links,
+  Link,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
-
 import "./tailwind.css";
-
-export const links: LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-];
-
-export function Layout({ children }: { children: React.ReactNode }) {
+import prisma from "prisma/prismaClient";
+import { User } from "~/types";
+export const loader = async () => {
+  const users = await prisma.users.findMany();
+  return { users };
+};
+export default function App() {
+  const { users } = useLoaderData<{ users: User[] }>();
   return (
     <html lang="en">
       <head>
@@ -32,14 +26,34 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <main className="flex">
+          <div className="flex  ">
+            <div className="flex flex-col items-center">
+              <header className="flex flex-col items-center gap-9"></header>
+              <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
+                <p className="leading-6 text-gray-700 dark:text-gray-200">
+                  What&apos;s next?
+                </p>
+                <ul>
+                  {users.map((user) => (
+                    <li key={user.id}>
+                      <Link
+                        to={`/user/${user.email}`}
+                        className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
+                      >
+                        {user.firstName} {user.lastName}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <Outlet />
+        </main>
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }
