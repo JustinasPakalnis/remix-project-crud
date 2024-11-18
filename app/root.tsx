@@ -1,22 +1,14 @@
 import {
-  Form,
   Links,
   Link,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
 import "./tailwind.css";
-import prisma from "prisma/prismaClient";
-import { User } from "~/types";
-export const loader = async () => {
-  const users = await prisma.users.findMany();
-  return { users };
-};
+
 export default function App() {
-  const { users } = useLoaderData<{ users: User[] }>();
   return (
     <html lang="en">
       <head>
@@ -27,28 +19,12 @@ export default function App() {
       </head>
       <body>
         <main className="flex">
-          <div className="flex  ">
-            <div className="flex flex-col items-center">
-              <header className="flex flex-col items-center gap-9"></header>
-              <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-                <p className="leading-6 text-gray-700 dark:text-gray-200">
-                  What&apos;s next?
-                </p>
-                <ul>
-                  {users.map((user) => (
-                    <li key={user.id}>
-                      <Link
-                        to={`/user/${user.email}`}
-                        className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
-                      >
-                        {user.firstName} {user.lastName}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <Link
+            to="/users"
+            className="rounded-3xl h-10 m-4 flex justify-center content-center items-center bg-sky-500  border border-gray-200 p-3 w-60 text-center text-blue-700 hover:underline dark:border-gray-700 dark:text-blue-500"
+          >
+            Users
+          </Link>
           <Outlet />
         </main>
         <ScrollRestoration />
