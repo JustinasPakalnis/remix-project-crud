@@ -7,10 +7,23 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import "./tailwind.css";
-
+import type { LinksFunction } from "@remix-run/node";
+export const links: LinksFunction = () => [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+  },
+];
 export default function App() {
+  const mode = null;
   return (
-    <html lang="en">
+    <html lang="en" className={mode}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,13 +35,13 @@ export default function App() {
           <div>
             <Link
               to="/users"
-              className="rounded-lg h-10 w-36 m-4 flex justify-center content-center items-center bg-sky-500  border border-gray-200 p-3 w-60 text-center text-blue-700 hover:underline dark:border-gray-700 dark:text-blue-500"
+              className="m-4 flex h-10 w-60 content-center items-center justify-center rounded-lg border border-gray-200 bg-sky-500 p-3 text-center text-blue-700 hover:underline dark:border-gray-700 dark:bg-black dark:text-blue-500"
             >
               Users list
             </Link>
             <Link
               to="/new"
-              className="rounded-lg h-10 m-4 w-36  flex justify-center content-center items-center bg-lime-500 border border-gray-200 p-3 w-60 text-center text-blue-700 hover:underline dark:border-gray-700 dark:text-blue-500"
+              className="m-4 flex h-10 w-60 content-center items-center justify-center rounded-lg border border-gray-200 bg-lime-500 p-3 text-center text-blue-700 hover:underline dark:border-gray-700 dark:text-blue-500"
             >
               New user
             </Link>
